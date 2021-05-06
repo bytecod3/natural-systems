@@ -1,7 +1,7 @@
-##Description
+#Description
 These algorithms simulate different miscellaneous phenomena in life
 
-###Further reading
+##Further reading
 ####1. [Spirographs](https://en.wikipedia.org/wiki/Spirograph)
 
 
