@@ -83,8 +83,8 @@ def main():
 
     # check if "glider" demo is specified
     if args.glider:
-        grid = np.zeros(N * N).reshape(N * N)
-        addGlider(0, 0, grid)
+        grid = np.zeros(N * N).reshape(N, N)
+        addGlider(1, 1, grid)
     else:
         # populate grid with random on/off - playing with probability here (range = 20% -> 80%)
         grid = randomGrid(N)
