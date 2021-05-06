@@ -1,5 +1,4 @@
-
-#imports
+# imports
 import sys, argparse
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,19 +8,23 @@ ON = 255
 OFF = 0
 vals = [ON, OFF]
 
+
 def randomGrid(N):
     """Returns a grid of N*N random values"""
-    return np.random.choice(vals, N*N, p=[0.2,0.8]).reshape(N, N) # 20% probability of having OFF and 80% of having OFF
+    return np.random.choice(vals, N * N, p=[0.2, 0.8]).reshape(N,
+                                                               N)  # 20% probability of having OFF and 80% of having OFF
+
 
 def addGlider(i, j, grid):
     """Adds a glider with top left corner cell at (i,j)"""
     glider = np.array(
-        [[0,0,255],
-        [255,0,255],
-        [0,255,255]]
+        [[0, 0, 255],
+         [255, 0, 255],
+         [0, 255, 255]]
     )
 
-    grid[i:i+3, j:j+3] = glider # copy glider pattern into the 2D grid
+    grid[i:i + 3, j:j + 3] = glider  # copy glider pattern into the 2D grid
+
 
 def update(frameNum, img, grid, N):
     """Copy grid since we require 8 neighbours for calculation
@@ -33,15 +36,15 @@ def update(frameNum, img, grid, N):
             # compute -neighbour sum using toroidal boundary conditions
             # x and y wrap around so that the simulation takes place on a toroidal surface
             # formula: add all the surrounding cells and divide by 255 to know what number of cells are ON
-            total = int((grid[i, (j-1)%N] + grid[i, (j+1)%N] +
-                         grid[(i-1)%N, j] + grid[(i+1)%N, j] +
-                         grid[(i-1)%N, (j-1)%N] + grid[(i-1)%N, (j+1)%N]+
-                         grid[(i+1)%N, (j-1)%N] + grid[(i+1)%N, (j+1)%N]
+            total = int((grid[i, (j - 1) % N] + grid[i, (j + 1) % N] +
+                         grid[(i - 1) % N, j] + grid[(i + 1) % N, j] +
+                         grid[(i - 1) % N, (j - 1) % N] + grid[(i - 1) % N, (j + 1) % N] +
+                         grid[(i + 1) % N, (j - 1) % N] + grid[(i + 1) % N, (j + 1) % N]
                          ) / 255)
 
             # apply Conway's rules
             if grid[i, j] == ON:
-                if(total < 2) or (total > 3):
+                if (total < 2) or (total > 3):
                     newGrid[i, j] = OFF
             else:
                 if total == 3:
@@ -61,7 +64,8 @@ def main():
     parser.add_argument('--grid-size', dest='N', required=False)
     parser.add_argument('--mov-file', dest='movFile', required=False)
     parser.add_argument('--interval', dest='interval', required=False)
-    parser.add_argument('--slider', action='store_true', required=False)
+    parser.add_argument('--glider', action='store_true', required=False)
+    parser.add_argument('--gosper', action='store_true', required=False)
     args = parser.parse_args()
 
     # set grid size
@@ -79,8 +83,8 @@ def main():
 
     # check if "glider" demo is specified
     if args.glider:
-        grid = np.zeroes(N*N).reshape(N*N)
-        addGlider(1,1, grid)
+        grid = np.zeros(N * N).reshape(N * N)
+        addGlider(0, 0, grid)
     else:
         # populate grid with random on/off - playing with probability here (range = 20% -> 80%)
         grid = randomGrid(N)
@@ -89,9 +93,9 @@ def main():
     fig, ax = plt.subplots()
     img = ax.imshow(grid, interpolation='nearest')
     ani = animation.FuncAnimation(fig, update, fargs=(img, grid, N),
-                                  frames =10,
-                                  interval =updateInterval,
-                                  save_count = 50)
+                                  frames=10,
+                                  interval=updateInterval,
+                                  save_count=50)
 
     # set the output file
     if args.movFile:
